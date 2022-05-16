@@ -1,0 +1,123 @@
+#+title: Medication.el
+
+~medication.el~ is an Emacs package for quickly capturing and logging ingested medications to an Org
+Mode file by supplying a capture template and some completing-read functions.
+
+When a capture is begun, the user is presented with a list of medications followed by a list of
+common amounts in milligrams. Both lists can be customized.
+
+
+/While the package is intended for logging medication, there are no explicit guard rails in place to/
+/keep users from using it to log and keep track of whatever they want. Some alternative uses for this
+/package might include logging food or keeping track of nicotine intake./
+
+* Installation
+
+** Manual Installation
+
+#+begin_src sh
+M-x package-install RET dashboard-hackernews
+#+end_src
+
+** Installation with [[https://github.com/jwiegley/use-package][use-package]]
+
+Since this version of the package isn't available on MELPA or any other package archive, users will
+need to point use package to the ~medication.el~ file after cloning it.
+
+#+begin_src emacs-lisp
+(use-package medication
+  :load-path "path/to/files/medication.el"
+  :config
+  (require 'json))
+#+end_src
+
+** Installation with [[https://github.com/raxod502/straight.el][straight.el]]
+
+Installation with ~straight.el~ is a breeze, but requires a custom recipe until this package makes its
+way into a package archive like MELPA.
+
+#+begin_src emacs-lisp
+(straight-use-package
+ '(medication
+   :type git
+   :host github
+   :repo "carwin/medication.el"))
+#+end_src
+
+When using both ~straight.el~ and ~use-package~, the configuration looks like this:
+
+#+begin_src emacs-lisp
+(use-package medication
+  :straight (medication :type git :host github :repo "carwin/medication.el")
+  :config
+  (require 'json))
+#+end_src
+
+* Usage
+
+Usage is pretty straightforward, but it is important that the path to the log file (at least) is
+defined through the variable ~medication-log-file~.
+
+** Customizing the list of medications
+
+The package provides a default list of some over-the-counter drugs to choose from, this list can
+easily be customized by setting the ~medication-drug-log-drugs~ variable:
+
+#+begin_src emacs-lisp
+(setq medication-drug-log-drugs '("Panobinostat"
+                                  "Solriamfetol"
+                                  "Chicken Noodle Soup"
+                                  "Lipitor"
+                                  "Benadryl"))
+#+end_src
+
+Similarly, the common amounts list can be customized setting the variable
+~medication-drug-log-amounts-mg~:
+
+#+begin_src emacs-lisp
+(setq medication-drug-log-amounts-mg '("10mg"
+                                       "20mg"
+                                       "50mg"
+                                       "100mg"
+                                       "200mg"
+                                       "1000mg"))
+#+end_src
+
+The medication log file will be populated with simple top-level Org Mode headlines, with new entries
+coming in on top. Each entry captures three properties: ~:WHAT:~, ~:WHEN:~, and ~:AMOUNT:~.
+
+#+begin_src emacs-lisp
+ * [2021-03-01 Mon 11:30] - Ibuprofin
+ :PROPERTIES:
+ :WHAT: Ibuprofin
+ :WHEN: [2021-03-01 Mon 11:30]
+ :AMOUNT: 200mg
+ :END:
+#+end_src
+
+From here, users can do whatever they'd like with the information. I like to use org-columns to
+create a table in my file like this:
+
+#+begin_src emacs-lisp
+#+title: Medication Logbook
+#+startup: overview
+#+columns: %when(Time) %what(Title) %amount(Amount)
+
+#+BEGIN: columnview :hlines 1 :id global :skip-empty-rows t :indent t
+| Time                   | Title         | Amount |
+|------------------------+---------------+--------|
+| [2022-05-16 Mon 01:51] | Ibuprofin     | 200mg  |
+|------------------------+---------------+--------|
+| [2022-05-15 Sun 17:42] | Melatonin     | 50mg   |
+|------------------------+---------------+--------|
+| [2022-05-12 Thu 10:09] | Multivitamin  | 100mg  |
+|------------------------+---------------+--------|
+#+END
+
+#+end_src
+
+From here you could do something interesting like make fancy graphs with ~gnuplot~:
+
+#+begin_src emacs-lisp
+,#+PLOT: ind:1 deps:(1) timefmt:"%Y-%m-%d" with:histograms set:"style fill solid 1 border lt -1" set:"style histogram cluster" set:"yrange [0:1000]"
+#+end_src
