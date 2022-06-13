@@ -22,7 +22,8 @@
 
 ;; This package defines some common over-the-counter drugs as default
 ;; options, but users are expected to customize these variables.
-(defcustom medication-drug-log-drugs '("acetaminophen" "ibuprofin" "melatonin")
+;;(defcustom medication-drug-log-drugs '("acetaminophen" "ibuprofin" "melatonin")
+(defcustom medication-drug-log-drugs nil
   "A list of medications to provide as choices when logging drug usage.
 
 Users are expected to override this list with their own list of common
@@ -30,7 +31,8 @@ medication amounts."
   :tag "Medication List"
   :group 'medication)
 
-(defcustom medication-drug-log-amounts-mg '("100mg" "200mg" "500mg")
+;;(defcustom medication-drug-log-amounts-mg '("100mg" "200mg" "500mg")
+(defcustom medication-drug-log-amounts-mg nil
   "A list of common amounts to use for drug logging
 
 Users are expected to override this list with their own list of common

@@ -13,12 +13,6 @@ common amounts in milligrams. Both lists can be customized.
 
 * Installation
 
-** Manual Installation
-
-#+begin_src sh
-M-x package-install RET dashboard-hackernews
-#+end_src
-
 ** Installation with [[https://github.com/jwiegley/use-package][use-package]]
 
 Since this version of the package isn't available on MELPA or any other package archive, users will
